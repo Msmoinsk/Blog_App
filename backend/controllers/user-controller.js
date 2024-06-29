@@ -48,7 +48,8 @@ export const signUp = async (req, res, next) => {
     const user = new User({
         name,
         email,
-        password: hashedPassword
+        password: hashedPassword,
+        blogs:[],
     })
     try{
         await user.save()
@@ -60,4 +61,33 @@ export const signUp = async (req, res, next) => {
         message:"User Created",
         user: user
     })
+}
+
+export const login = async (req, res, next) => {
+    const { email, password } = req.body
+    let existingUser
+    try{
+        existingUser = await User.findOne({email})
+    } catch (err){
+        return console.log(err);
+    }
+    if(!existingUser) {
+        return res.status(400).json({
+            success: false,
+            message: "Could not find the User with this email ID"
+        })
+    }
+
+    const isPasswordCorrect = bcrypt.compareSync(password, existingUser.password)
+    if(!isPasswordCorrect){
+        return res.status(400).json({
+            success:false,
+            message:"Incorrect Password"
+        })
+    }
+    return res.status(200).json({
+        success:true,
+        message:"Login successfull"
+    })
+
 }

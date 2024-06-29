@@ -1,6 +1,7 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import router from './routes/user-routes.js'
+import blog_router from './routes/blog-routes.js'
 
 const app = express()
 app.use(express.json())
@@ -20,7 +21,9 @@ mongoose
 // DataBase Connection code ends here
 
 // The API for the appication started
-app.use('/api/user',router)
+app.use('/api/user', router)
+
+app.use("/api/blog", blog_router)
 
 app.use('/api', (req, res, next) => {
     res.status(200).send("hello World")
